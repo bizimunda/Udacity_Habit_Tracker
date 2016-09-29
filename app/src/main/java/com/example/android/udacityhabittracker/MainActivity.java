@@ -33,6 +33,10 @@ public class MainActivity extends ActionBarActivity {
 
         //update();
 
+        Cursor cursor=read(3);
+        Toast.makeText(this, " "+ cursor.getCount() , Toast.LENGTH_LONG).show();
+
+
     }
     //this method let us to insert data into the db
     private void insert(){
@@ -134,6 +138,28 @@ public class MainActivity extends ActionBarActivity {
         db.close();
 
 
+    }
+    //this method let us to read data from db and returns a cursor
+    private Cursor read(int recordId){
+
+        mDbHelper= new HabitDbHelper(this);
+        SQLiteDatabase db= mDbHelper.getWritableDatabase();
+        Cursor record;
+        String table = HabitContract.HabitEntry.TABLE_NAME;
+        String selection = HabitContract.HabitEntry._ID + " = ? ";
+        String[] selectionArgs = new String[]{Integer.toString(recordId)};
+        db = mDbHelper.getReadableDatabase();
+        try {
+            record = db.query(true, table, null, selection, selectionArgs, null, null, null, null);
+            record.moveToFirst();
+            record.close();
+            db.close();
+            return record;
+        } catch (Exception e) {
+            e.printStackTrace();
+            db.close();
+            return null;
+        }
     }
 
 
